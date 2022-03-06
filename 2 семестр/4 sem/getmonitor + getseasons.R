@@ -36,14 +36,15 @@
 
 setwd('C:\\Users\\gua4d\\Desktop\\specdata')
 get_monitor = function(id, directory, summarize = FALSE){
+  # здесь можно использовать конструкции типа tryCatch(), но мне пришлось бы это объяснять (+ предполагается, что вы сами должны были написать решение задачи)
   if(is.na(as.integer(id))) stop('id is not valid')
   id = as.integer(id)
   if (id >= 1 & id <= 332) {
     # nothing to do
   } else stop('id is not valid')
   
-  id = paste(c(rep(0, 3-nchar(id)), id), collapse = '')
-  data = read.csv(file.path(directory, paste(id, '.csv', sep= '')))
+  id = paste(c(rep(0, 3-nchar(id)), id), collapse = '') # добавляем нули к началу id, чтобы прочесть файлы
+  data = read.csv(file.path(directory, paste(id, '.csv', sep= ''))) #file.path <=> paste(sep = '/')
   
   if (summarize){
     summary = summary(data)
@@ -57,7 +58,7 @@ get_monitor = function(id, directory, summarize = FALSE){
   }
   
   data$Date = as.Date(data$Date)
-  data= na.omit(data)
+  data = na.omit(data)
   return(data)
 }
 
@@ -70,12 +71,15 @@ getseasons <- function(id,directory,factor,byid=F) {
   }
   
   if (byid){
+    # group by: id, date
     tagg = aggregate(dataset, list(id = dataset$ID, 
                             month = format(dataset$Date, "%m")), mean)
   } else {
+    # group by: date
     tagg = aggregate(dataset, list(
                                   month = format(dataset$Date, "%m")), mean)
   }
+  plot(tagg)
 }
 
 
